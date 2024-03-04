@@ -38,11 +38,10 @@ const task = async (req, res) => {
     }
   } else if (action === "update") {
     try {
-      const { title, description, dueDate } = taskAssigned; // Destructure taskAssigned here
+      const { title, description, dueDate } = taskAssigned;
 
       const updatedAt = new Date().toLocaleDateString();
 
-      // Assuming username and title uniquely identify the task to be updated
       const updatedTask = await UserInfo.findOneAndUpdate(
         { username, title },
         {
