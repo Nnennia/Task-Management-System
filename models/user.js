@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String },
   userPassword: { type: String },
   taskAssigned: {
-    tile: { type: String },
+    title: { type: String },
     description: { type: String },
     createdAt: Date,
     updatedAt: Date,

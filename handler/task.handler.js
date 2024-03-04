@@ -38,20 +38,34 @@ const task = async (req, res) => {
     }
   } else if (action === "update") {
     try {
+      const { username, taskAssigned } = req.body;
+
+      if (!username || !taskAssigned) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
       const { title, description, dueDate } = taskAssigned;
 
-      const updatedAt = new Date().toLocaleDateString();
+      if (!title || !description || !dueDate) {
+        return res.status(400).json({ error: "Missing required task fields" });
+      }
 
-      const updatedTask = await UserInfo.findOneAndUpdate(
-        { username, title },
-        {
-          $set: {
-            description,
-            dueDate,
-            updatedAt,
-          },
+      const updatedAt = new Date();
+
+      const query = { username, "taskAssigned.title": title };
+      const update = {
+        $set: {
+          "taskAssigned.$.description": description,
+          "taskAssigned.$.dueDate": dueDate,
+          "taskAssigned.$.updatedAt": updatedAt,
         },
-        { new: true }
+      };
+
+      const options = { new: true };
+      const updatedTask = await UserInfo.findOneAndUpdate(
+        query,
+        update,
+        options
       );
 
       if (!updatedTask) {
@@ -79,6 +93,42 @@ const task = async (req, res) => {
       }
 
       return res.status(200).json({ tasks: userTasks.taskAssigned });
+    } catch (error) {
+      console.error("Error", error);
+      return res.status(500).json({ error: "Internal server Error" });
+    }
+  } else if (action === "delete") {
+    try {
+      const { username, taskAssigned } = req.body;
+      if (!username || !taskAssigned) {
+        return res.status(400).json({ error: "Missing required field" });
+      }
+      const user = await UserInfo.findOne({ username });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      const task = await UserInfo.findOneAndDelete({ taskAssigned });
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+    } catch (error) {
+      console.error("Error", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else if (action === "finishTask") {
+    try {
+      const completedAt = new Date();
+      const updatedTask = await UserInfo.findByIdAndUpdate(
+        taskAssigned,
+        { completedAt },
+        { new: true }
+      );
+      if (!updatedTask) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      return res
+        .status(200)
+        .json({ message: `Task : ${title} completed at ${completedAt}` });
     } catch (error) {
       console.error("Error", error);
       return res.status(500).json({ error: "Internal server Error" });
