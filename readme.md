@@ -161,7 +161,7 @@ Response: 200 OK
 json
 
     {
-      "message": "Task marked as completed successfully"
+      message: `Task : ${title} completed at ${completedAt}`
     }
 
 Error Responses
