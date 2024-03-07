@@ -81,7 +81,7 @@ const task = async (req, res) => {
       if (!userTasks) {
         return res
           .status(404)
-          .json({ error: `${username} not found or has no tasks` });
+          .json({ error: `${username} not found !` });
       }
 
       return res.status(200).json({ tasks: userTasks.taskAssigned });
