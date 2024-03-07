@@ -78,7 +78,7 @@ Response: 200 OK
 json
 
     {
-      "message": "Task updated for {username}",
+      "message": "Task updated for ${username}",
       "updatedTask": {
         "title": "string",
         "description": "string",

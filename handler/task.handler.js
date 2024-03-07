@@ -6,7 +6,6 @@ const task = async (req, res) => {
   if (action === "create") {
     try {
       const { title, description, dueDate } = taskAssigned;
-
       if (!username || !title || !description || !dueDate) {
         return res.status(400).json({ error: "Missing required fields" });
       }
@@ -38,18 +37,11 @@ const task = async (req, res) => {
     }
   } else if (action === "update") {
     try {
-      const { username, taskAssigned } = req.body;
+      const { username, title, description, dueDate } = req.body;
 
-      if (!username || !taskAssigned) {
+      if (!username || !title || !description || !dueDate) {
         return res.status(400).json({ error: "Missing required fields" });
       }
-
-      const { title, description, dueDate } = taskAssigned;
-
-      if (!title || !description || !dueDate) {
-        return res.status(400).json({ error: "Missing required task fields" });
-      }
-
       const updatedAt = new Date();
 
       const query = { username, "taskAssigned.title": title };
@@ -99,7 +91,7 @@ const task = async (req, res) => {
     }
   } else if (action === "delete") {
     try {
-      const { username, taskAssigned } = req.body;
+      //const { username, taskAssigned } = req.body;
       if (!username || !taskAssigned) {
         return res.status(400).json({ error: "Missing required field" });
       }
