@@ -1,174 +1,126 @@
-Task Management API
+Task Management API Documentation
 
-Welcome to the Task Management API documentation! This API allows users to perform various operations related to task management, such as creating, updating, fetching, and deleting tasks.
-Base URL
+This API allows users to manage tasks assigned to them.
+Base URL:
 
 
 
-https://localhost:PORT
+http://localhost:{PORT}/task
 
-Authentication
-
-Some endpoints require administrator authentication.
-Endpoints
-
-    Create Task
-    Update Task
-    Get User Tasks
-    Delete Task
-    Finish Task
-
+Endpoints:
 Create Task
 
-Create a new task for a user.
-
-    URL: /task
+    URL: /create
     Method: POST
+    Description: Creates a new task for a specified user.
     Request Body:
 
     json
 
-{
-  "action": "create",
-  "taskAssigned": {
-    "title": "string",
-    "description": "string",
-    "dueDate": "string (YYYY-MM-DD)"
-  },
-  "username": "string"
-}
-
-Response: 201 Created
-
-json
-
     {
-      "message": "Task created for {username}",
-      "newTask": {
-        "title": "string",
-        "description": "string",
-        "dueDate": "string (YYYY-MM-DD)",
-        "createdAt": "string (timestamp)",
-        "completedAt": null
-      }
+      "action": "create",
+      "taskAssigned": {
+        "title": "Task Title",
+        "description": "Task Description",
+        "dueDate": "YYYY-MM-DD",
+        "completedAt": null,
+        "createdAt": "YYYY-MM-DD"
+      },
+      "username": "username"
     }
+
+    Response:
+        201 Created: Task successfully created.
+        400 Bad Request: Missing required fields or invalid request.
+        404 Not Found: User not found.
+        500 Internal Server Error: Server error.
 
 Update Task
 
-Update an existing task.
-
-    URL: /task
-    Method: PUT
+    URL: /update
+    Method: POST
+    Description: Updates an existing task.
     Request Body:
 
     json
 
-{
-  "action": "update",
-  "taskAssigned": {
-    "title": "string",
-    "description": "string",
-    "dueDate": "string (YYYY-MM-DD)"
-  },
-  "username": "string"
-}
-
-Response: 200 OK
-
-json
-
     {
-      "message": "Task updated for ${username}",
-      "updatedTask": {
-        "title": "string",
-        "description": "string",
-        "dueDate": "string (YYYY-MM-DD)",
-        "createdAt": "string (timestamp)",
-        "completedAt": "string (timestamp)"
-      }
+      "action": "update",
+      "taskAssigned": {
+        "title": "Task Title",
+        "description": "New Task Description",
+        "dueDate": "New Due Date"
+      },
+      "username": "username"
     }
+
+    Response:
+        200 OK: Task successfully updated.
+        400 Bad Request: Missing required fields or invalid request.
+        404 Not Found: Task not found.
+        500 Internal Server Error: Server error.
 
 Get User Tasks
 
-Retrieve tasks associated with a specific user.
-
-    URL: /task
-    Method: GET
-    Query Parameters:
-        username: The username of the user whose tasks to fetch.
-    Response: 200 OK
+    URL: /get
+    Method: POST
+    Description: Retrieves all tasks associated with a user.
+    Request Body:
 
     json
 
     {
-      "tasks": [
-        {
-          "title": "string",
-          "description": "string",
-          "dueDate": "string (YYYY-MM-DD)",
-          "createdAt": "string (timestamp)",
-          "completedAt": "string (timestamp)"
-        },
-        ...
-      ]
+      "action": "get",
+      "username": "username"
     }
+
+    Response:
+        200 OK: Tasks successfully retrieved.
+        404 Not Found: User not found.
+        500 Internal Server Error: Server error.
 
 Delete Task
 
-Delete a task.
-
-    URL: /task
-    Method: DELETE
+    URL: /delete
+    Method: POST
+    Description: Deletes a task assigned to a user.
     Request Body:
 
     json
 
-{
-  "action": "delete",
-  "username": "string",
-  "taskAssigned": {
-    "title": "string"
-  }
-}
-
-Response: 200 OK
-
-json
-
     {
-      "message": "Task deleted successfully"
+      "action": "delete",
+      "username": "username",
+      "taskAssigned": "Task Title"
     }
+
+    Response:
+        200 OK: Task successfully deleted.
+        400 Bad Request: Missing required field or invalid request.
+        404 Not Found: User or task not found.
+        500 Internal Server Error: Server error.
 
 Finish Task
 
-Mark a task as completed.
-
-    URL: /task
-    Method: PUT
+    URL: /finishTask
+    Method: POST
+    Description: Marks a task as completed.
     Request Body:
 
     json
 
-{
-  "action": "finishTask",
-  "taskAssigned": {
-    "title": "string"
-  }
-}
-
-Response: 200 OK
-
-json
-
     {
-      message: `Task : ${title} completed at ${completedAt}`
+      "action": "finishTask",
+      "taskAssigned": "Task ID"
     }
 
-Error Responses
+    Response:
+        200 OK: Task successfully marked as completed.
+        404 Not Found: Task not found.
+        500 Internal Server Error: Server error.
 
-    Status: 400 Bad Request
-        Missing required fields in the request body.
-    Status: 404 Not Found
-        User or task not found.
-    Status: 500 Internal Server Error
-        Internal server error occurred.
+Error Responses:
+
+    400 Bad Request: Indicates that the request was incorrect or missing required fields.
+    404 Not Found: Indicates that the requested resource (user or task) was not found.
+    500 Internal Server Error: Indicates a server-side error occurred.

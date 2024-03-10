@@ -1,16 +1,16 @@
-const UserInfo = require("../models/user");
+const AdminInfo = require("../models/admin");
 const bcrypt = require("bcrypt");
 
 const login = async (req, res) => {
   try {
     const { username, userPassword } = req.body;
-    const user = await UserInfo.findOne({ username });
+    const user = await AdminInfo.findOne({ username });
 
     if (!user) {
       return res.status(401).json({ error: "Incorrect username or password" });
     }
 
-    const validPassword = await bcrypt.compare(userPassword, user.userPassword);
+    const validPassword = bcrypt.compare(userPassword, user.userPassword);
 
     if (!validPassword) {
       return res.status(401).json({ error: "Incorrect username or password" });
